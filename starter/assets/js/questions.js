@@ -5,6 +5,8 @@ var listEl = document.getElementById("highscores");
 //listEl is now the ordered list in the highscores.html
 var question1 = document.getElementById("question-title");
 //question1 is now the h2 part in the index.html
+var formEl = document.getElementById("choices");
+//formEl is now the choices part in the index.html
 
 var questions = [
   {
@@ -39,18 +41,25 @@ function renderLastRegistered() {
 }
 
 function timer() {
-
+//to be filled in later
 }
 
 function playGame() {
-    question1 = questions[0].question;
-    timer();
-/*
-Now we are working out how to add the multiple choices into a drop down
-The activity that used a drop down was the one that changed fonts
-The area that this will link to in the html is already there
-It has the id, and class, if you need it, of choices. Commit first.
-*/
+    question1 = questions[0].question;//sets question 1
+    timer();//starts timer and everything else in timer function
+    
+    //create form, add to html at the div with id of choices
+    var form = document.createElement("form");
+    formEl.appendChild(form);
+    //create two options, give them content,
+    //add to html as options of the form just created
+    var choice1 = document.createElement("option");
+    choice1.textContent = questions[0].correctAnswer;
+    form.appendChild(choice1);
+    var choice2 = document.createElement("option");
+    choice2.textContent = questions[0].wrongAnswer;
+    form.appendChild(choice2);
+
 }
 
 renderLastRegistered();
