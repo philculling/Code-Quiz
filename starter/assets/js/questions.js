@@ -1,6 +1,9 @@
 //test linked ok
 console.log (1 + 2);
 
+var listEl = document.getElementById("highscores");
+//listEl is now the ordered list
+
 renderLastRegistered();
 
 function renderLastRegistered() {
@@ -11,15 +14,11 @@ function renderLastRegistered() {
   if (prevScores === "" || prevInitials === "") {
     return;
   }
-  /* Else
-  1. create a li DONE
-  2. add textcontent to that list item that will use the above variable DONE
-  3. append that list item to the the ol in the highscores.html
-  */
   else {
     var listItem = document.createElement("li");
-    li.textContent = prevInitials + prevScores;
-    //document.body. want to append to ol
+    listItem.textContent = prevInitials + prevScores;
+    listEl.appendChild(listItem);
   }
 }
-//Make sure to set up any variables in here as you go along and think about the order.
+//Make sure to set up any variables in here 
+//as you go along and think about the order.
