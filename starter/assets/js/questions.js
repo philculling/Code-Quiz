@@ -9,11 +9,13 @@ var formEl = document.getElementById("choices");
 //formEl is now the choices part in the index.html
 var userChoice = document.getElementById("option");
 /*userChoice, when selected later in the playGame function, 
-should now link to the option section of the form*/
+should now link to the option section of the form
+It might matter that option has not yet been created...*/
+var start = document.getElementById("start");
+//variable start now linked to the button so can now be used in eventListener
 
 var chosenAnswer;
-/*The above is undefined at the start, and later takes on the value of
-what the user clicks on in the eventListener in the playGame function.
+/*The above is undefined at the start, gets defined in the playGame function.
 */
 
 var userWin = false;//default so that end is not triggered until user has won
@@ -21,8 +23,8 @@ var userWin = false;//default so that end is not triggered until user has won
 var questions = [
   {
       question: "The type of bracket used after the word if in an if statement is?",
-      correctAnswer: "(",
-      wrongAnswer: "[",
+      correctAnswer: "parentheses, as in: (",
+      wrongAnswer: "square brackets, as in [",
   },
   {
       question: "A function within an object is called?",
@@ -35,8 +37,9 @@ var questions = [
       wrongAnswer: "html",
   }
 ];
+
 function renderLastRegistered() {
-  // Fill in code here to retrieve all scores and user initials
+  //Retrieves all previous scores and user initials
   var prevScores = localStorage.getItem("prevScores");
   var prevInitials = localStorage.getItem("prevInitials");
   // If they are null, return early from this function
@@ -55,17 +58,17 @@ function timer() {
 }
 
 function playGame() {
-    question1 = questions[0].question;//sets question 1
-    timer();//starts timer and everything else in timer function
-
+    //updates question1 to be first question from array
+    question1 = questions[0].question;
+    //starts timer and everything else in timer function
+    timer();
     //default userWin = false, not sure if necessary or desirable
     userWin = false;
-    
-    //create form, add to html at the div with id of choices
+
+    //create form element, add to html at the div with id of choices
     var form = document.createElement("form");
     formEl.appendChild(form);
-    //create two options, give them content,
-    //add to html as options of the form just created
+    //create two options for inside the form, give them content,
     var choice1 = document.createElement("option");
     choice1.textContent = questions[0].correctAnswer;
     form.appendChild(choice1);
@@ -76,8 +79,10 @@ function playGame() {
     and updates the variable to be used in the if statement.*/
     userChoice.addEventListener('click', function (event) {
       event.preventDefault();
-      chosenAnswer = userChoice.ariaValueMax;/*wanted to write value
-      here, not ariaValueMax, but the computer would let me...?!*/
+      chosenAnswer = userChoice.option;/*wanted to write value
+      here, not ariaValueMax, but the computer would let me...?!
+      Tried option instead but this is a guess.
+      If this ends up being your only question seek help on Slack*/
     });
     if (chosenAnswer === questions[0].correctAnswer) {
       userWins();//function not yet created
@@ -87,8 +92,13 @@ function playGame() {
     }
 }
 
+//update from last played
 renderLastRegistered();
-playGame();
+//start game when user clicks on button
+start.addEventListener ('click', function (event) {
+  event.preventDefault();
+  playGame();
+})
 
 /*Make sure to set up any variables in here 
 as you go along and think about the order.
