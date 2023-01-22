@@ -106,21 +106,7 @@ function startGame() {
 function playGame() {
   //reveal div that contains questions
     questionDiv.setAttribute("style", "display:block; ");
-  /*  commit and short break
-  Research how buttons work in W3Schools and re-think how to do this section
-  do function endGame
-  commit
-  do function clear
-  commit
-  do README
-  commit
-  do README screenshot
-  commit
-  */
-    /*create form element, add to html at the div with id of choices
-    should we be creating a button instead?
-    There must be a button within the div that has the class of choices
-    because it's been targeted in the CSS*/
+  
     var form = document.createElement("form");
     formEl.appendChild(form);
 
@@ -128,33 +114,34 @@ function playGame() {
     //sets questions by looping through array
     questionEl = questions[i].question;
     //create 4 options for inside the form, give them content, append
-    var choice1 = document.createElement("option");
-    var choice2 = document.createElement("option");
-    var choice3 = document.createElement("option");
-    var choice4 = document.createElement("options");
+    var choice1 = document.createElement("input type=radio");
+    var label1 = document.createElement("label");
+    var choice2 = document.createElement("input type=radio");
+    var label2 = document.createElement("label");
+    var choice3 = document.createElement("input type=radio");
+    var label3 = document.createElement("label");
+    var choice4 = document.createElement("input type=radio");
+    var label4 = document.createElement("label");
      /*If you can, think about changing the position of the correctAnswer
     each time; at the moment it's always the first option*/
-    /*Need to change from option drop down to buttons.
-    Don't know how. Buttons have input with type AND label with text.
-    Create input with type radio AND label with text? So 8 additions?
-    */
-    choice1.textContent = questions[i].correctAnswer;
+    
+    label1.textContent = questions[i].correctAnswer;
     form.appendChild(choice1);
-    choice2.textContent = questions[i].wrongAnswer1;
+    choice1.appendChild(label1);
+    label2.textContent = questions[i].wrongAnswer1;
     form.appendChild(choice2);
-    choice3.textContent = questions[i].wrongAnswer2;
+    choice2.appendChild(label2);
+    label3.textContent = questions[i].wrongAnswer2;
     form.appendChild(choice3);
-    choice4.textContent = questions[i].wrongAnswer3;
+    choice3.appendChild(label3);
+    label4.textContent = questions[i].wrongAnswer3;
     form.appendChild(choice4);
+    choice4.appendChild(label4);
     /*addEventListener that tracks the user's choice
     and updates the variable to be used in the if statement.*/
     userChoice.addEventListener('click', function (event) {
       event.preventDefault();
-      chosenAnswer = userChoice.option;/*wanted to write value
-      here, but the computer would let me, kept subbing in 
-      ariaValueMax...?! So I tried option instead but this is a guess.
-      Might be different when changing to radio buttons anyway.
-      */
+      chosenAnswer = userChoice.input;
     });
     if (chosenAnswer === questions[i].correctAnswer) {
       userWins();
@@ -202,3 +189,16 @@ start.addEventListener('click', startGame);//not yet working, don't understand w
 /*Make sure to set up any variables in here 
 as you go along and think about the order.
 */
+
+/*
+  LEFT TO DO
+  do function endGame, including changing the attribute of the above back again
+  and doing the same to the thing you're now targeting
+  commit
+  do function clear
+  commit
+  do README
+  commit
+  do README screenshot
+  commit
+  */
