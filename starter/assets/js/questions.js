@@ -3,7 +3,7 @@ console.log (1 + 2);
 
 var listEl = document.getElementById("highscores");
 //listEl is now the ordered list in the highscores.html
-var question1 = document.getElementById("question-title");
+var questionEl = document.getElementById("question-title");
 //question1 is now the h2 part in the index.html
 var formEl = document.getElementById("choices");
 //formEl is now the choices part in the index.html
@@ -19,6 +19,8 @@ var chosenAnswer;
 */
 
 var userWin = false;//default so that end is not triggered until user has won
+var score = 0;//tracks score, adds when userWins
+var winMusic = new Audio ("correct.wav");//unlikely to work, come back to it
 
 var questions = [
   {
@@ -57,23 +59,28 @@ function timer() {
 //to be filled in later
 }
 
-function playGame() {
-    //updates question1 to be first question from array
-    question1 = questions[0].question;
+function startGame() {
+    //updates questionEl to be first question from array
+    questionEl = questions[0].question;
     //starts timer and everything else in timer function
     timer();
     //default userWin = false, not sure if necessary or desirable
     userWin = false;
+    playGame();
+}
 
+function playGame() {
     //create form element, add to html at the div with id of choices
     var form = document.createElement("form");
     formEl.appendChild(form);
+
+    for (i = 0; i < questions.length; i++) {
     //create two options for inside the form, give them content,
     var choice1 = document.createElement("option");
-    choice1.textContent = questions[0].correctAnswer;
+    choice1.textContent = questions[i].correctAnswer;
     form.appendChild(choice1);
     var choice2 = document.createElement("option");
-    choice2.textContent = questions[0].wrongAnswer;
+    choice2.textContent = questions[i].wrongAnswer;
     form.appendChild(choice2);
     /*addEventListener that tracks the user's choice
     and updates the variable to be used in the if statement.*/
@@ -84,12 +91,22 @@ function playGame() {
       Tried option instead but this is a guess.
       If this ends up being your only question seek help on Slack*/
     });
-    if (chosenAnswer === questions[0].correctAnswer) {
-      userWins();//function not yet created
+    if (chosenAnswer === questions[i].correctAnswer) {
+      userWins();
     }
     else {
       userLoss();//function not yet created
     }
+}}
+
+function userWins() {
+  //updates score, will be retrieved later.
+  score ++;
+  /*stops game when all questions are answered
+  Which activity did this? And can you transfer things over.
+  */
+  //activates sound - optional extra if time
+  winMusic.play();
 }
 
 //update from last played
@@ -97,7 +114,7 @@ renderLastRegistered();
 //start game when user clicks on button
 start.addEventListener ('click', function (event) {
   event.preventDefault();
-  playGame();
+  startGame();
 })
 
 /*Make sure to set up any variables in here 
