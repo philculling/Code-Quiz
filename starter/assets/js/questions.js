@@ -4,15 +4,14 @@ console.log (1 + 2);
 var listEl = document.getElementById("highscores");
 //listEl is now the ordered list in the highscores.html
 var questionEl = document.getElementById("question-title");
-//question1 is now the h2 part in the index.html
+//questionEl is now the h2 part in the index.html
 var formEl = document.getElementById("choices");
 //formEl is now the choices part in the index.html
 var userChoice = document.getElementById("option");
 /*userChoice, when selected later in the playGame function, 
-should now link to the option section of the form
-It might matter that option has not yet been created...*/
+should now link to the option section of the form*/
 var start = document.getElementById("start");
-//variable start now linked to the button so can now be used in eventListener
+//start now linked to the button so can now be used in eventListener
 
 var chosenAnswer;
 /*The above is undefined at the start, gets defined in the playGame function.
@@ -21,6 +20,8 @@ var chosenAnswer;
 var userWin = false;//default so that end is not triggered until user has won
 var score = 0;//tracks score, adds when userWins
 var winMusic = new Audio ("correct.wav");//unlikely to work, come back to it
+var lossMusic = new Audio ("incorrect.wav");//Sim.
+var timer = 75;
 
 var questions = [
   {
@@ -37,7 +38,9 @@ var questions = [
       question: "Arrays in JavaScript can be used to store...?",
       correctAnswer: "other arrays",
       wrongAnswer: "html",
-  }
+  }//Add more later, make this 5 questions with 4 choices each
+  //If you can, think about changing the position of the correctAnswer
+  //each time
 ];
 
 function renderLastRegistered() {
@@ -56,12 +59,15 @@ function renderLastRegistered() {
 }
 
 function timer() {
-//to be filled in later
+/*to be filled in later
+You've got a variable above called timer.
+You've set it to be 75.
+You have NOT yet linked it to where it should display in the html.
+You have made userLoss subtract 10 from it.
+*/
 }
 
 function startGame() {
-    //updates questionEl to be first question from array
-    questionEl = questions[0].question;
     //starts timer and everything else in timer function
     timer();
     //default userWin = false, not sure if necessary or desirable
@@ -75,7 +81,9 @@ function playGame() {
     formEl.appendChild(form);
 
     for (i = 0; i < questions.length; i++) {
-    //create two options for inside the form, give them content,
+    //sets first question
+    questionEl = questions[i].question;
+    //create two options for inside the form, give them content, append
     var choice1 = document.createElement("option");
     choice1.textContent = questions[i].correctAnswer;
     form.appendChild(choice1);
@@ -87,9 +95,9 @@ function playGame() {
     userChoice.addEventListener('click', function (event) {
       event.preventDefault();
       chosenAnswer = userChoice.option;/*wanted to write value
-      here, not ariaValueMax, but the computer would let me...?!
-      Tried option instead but this is a guess.
-      If this ends up being your only question seek help on Slack*/
+      here, but the computer would let me, kept subbing in 
+      ariaValueMax...?! So I tried option instead but this is a guess.
+      */
     });
     if (chosenAnswer === questions[i].correctAnswer) {
       userWins();
@@ -102,20 +110,20 @@ function playGame() {
 function userWins() {
   //updates score, will be retrieved later.
   score ++;
-  /*stops game when all questions are answered
-  Which activity did this? And can you transfer things over.
-  */
   //activates sound - optional extra if time
   winMusic.play();
+}
+
+function userLoss() {
+  timer = timer - 10;
+  //activates sound - optional extra if time
+  lossMusic.play();
 }
 
 //update from last played
 renderLastRegistered();
 //start game when user clicks on button
-start.addEventListener ('click', function (event) {
-  event.preventDefault();
-  startGame();
-})
+start.addEventListener ('click', startGame);//not yet working, don't understand why yet
 
 /*Make sure to set up any variables in here 
 as you go along and think about the order.
