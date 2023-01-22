@@ -13,6 +13,8 @@ should now link to the option section of the form
 which will be created later*/
 var start = document.getElementById("start");
 //start now linked to the button so can now be used in eventListener
+var timeEl = document.getElementById("time");
+//timeEl now linked to the countdown
 
 var chosenAnswer;
 /*The above is undefined at the start, gets defined in the playGame function.
@@ -22,7 +24,7 @@ var userWin = false;//default so that end is not triggered until user has won
 var score = 0;//tracks score, adds when userWins
 var winMusic = new Audio ("correct.wav");//unlikely to work, come back to it
 var lossMusic = new Audio ("incorrect.wav");//Sim.
-var timer = 75;
+var secondsLeft = 75;
 
 var questions = [
   {
@@ -84,13 +86,21 @@ function renderLastRegistered() {
 }
 
 function timer() {
-/*to be filled in later
-You've got a variable above called timer.
-You've set it to be 75.
-You have NOT yet linked it to where it should display in the html.
-You have made userLoss subtract 10 from it.
-*/
+  var timerInterval = setInterval(function() {
+    secondsLeft--;
+    timeEl.textContent = secondsLeft;
+    if(secondsLeft === 0) {
+      clearInterval(timerInterval);
+      endGame();//executes endGame function (yet to be created)
+      //colorexplosion had a sendMessage(); here; noted in case needed
+    }
+  }, 1000);
 }
+/*
+Commit.
+Do you need a message?
+Check CSS: is class = hide the clue to this?
+*/
 
 function startGame() {
   //test
@@ -117,7 +127,7 @@ function playGame() {
     var choice4 = document.createElement("options");
     /*Need to change from option drop down to buttons.
     Don't know how. Buttons have input with type AND label with text.
-    Create input with type radio AND label with text?
+    Create input with type radio AND label with text? So 8 additions?
     */
     choice1.textContent = questions[i].correctAnswer;
     form.appendChild(choice1);
@@ -153,7 +163,7 @@ function userWins() {
 }
 
 function userLoss() {
-  timer = timer - 10;
+  secondsLeft = (secondsLeft - 10);
   //activates sound - optional extra if time
   lossMusic.play();
 }
