@@ -5,6 +5,8 @@ var listEl = document.getElementById("highscores");
 //listEl is now the ordered list in the highscores.html
 var questionDiv = document.getElementById("questions");
 //questionDiv is now the div containing question title and choices
+var endScreenDiv = document.getElementById("end-screen");
+//endScreenDiv is now the div containing the all done and final score message
 var questionEl = document.getElementById("question-title");
 //questionEl is now the h2 part in the index.html
 var formEl = document.getElementById("choices");
@@ -17,10 +19,15 @@ var start = document.getElementById("start");
 //start now linked to the button so can now be used in eventListener
 var timeEl = document.getElementById("time");
 //timeEl now linked to the countdown
+var finalScoreEl = document.getElementById("final-score");
+//finalScoreEl now linked to where it should display
+var submitEl = document.getElementById("submit");
+//submitEl now linked to where user clicks submit after submitting initials
 
 var chosenAnswer;
 /*The above is undefined at the start, gets defined in the playGame function.
 */
+var initials;//starts undefined, gets defined in the endGame function.
 
 var userWin = false;//default so that end is not triggered until user has won
 var score = 0;//tracks score, adds when userWins
@@ -141,7 +148,7 @@ function playGame() {
     and updates the variable to be used in the if statement.*/
     userChoice.addEventListener('click', function (event) {
       event.preventDefault();
-      chosenAnswer = userChoice.input;
+      chosenAnswer = userChoice.input;//not sure this is the correct way
     });
     if (chosenAnswer === questions[i].correctAnswer) {
       userWins();
@@ -165,18 +172,24 @@ function userLoss() {
 }
 
 function endGame() {
-  /*
-  Change class of the div with id of questions back to hide
-  Change class of the div with id of end-screen off being hide,
-  which will open the input where the user enters initials
-  Display score
-  addEventListener to the submit button to take to highscores.html
-  sets results in local storage
-  */
+  //Change class of the div with id of questions back to hide
+  questionDiv.setAttribute("style", "display:hide; ");
+  //Change class of the div with id of end-screen out of hide
+  endScreenDiv.setAttribute("style", "display:block; ");
+  //Display score
+  finalScoreEl = score;
+  submitEl.addEventListener('click', function(event) {
+    event.preventDefault();
+    initials = submitEl.input;
+  //set results in local storage
+  localStorage.setItem("prevScores", prevScores);
+  localStorage.setItem("prevInitials", prevInitials);
+  renderLastRegistered();
+  })
 }
 
 function clear() {
-  /*resets local storage - see Thursday activity 2 lines 45 to 47
+  /*resets local storage
   */
 }
 
@@ -192,8 +205,6 @@ as you go along and think about the order.
 
 /*
   LEFT TO DO
-  do function endGame, including changing the attribute of the above back again
-  and doing the same to the thing you're now targeting
   commit
   do function clear
   commit
