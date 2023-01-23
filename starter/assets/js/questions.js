@@ -92,6 +92,27 @@ function renderLastRegistered() {
   }
 }
 
+function setScoresAndInitials() {
+  //set results in local storage
+  localStorage.setItem("prevScores", prevScores);
+  localStorage.setItem("prevInitials", prevInitials);
+  renderLastRegistered();
+}
+
+function endGame() {
+  //Change class of the div with id of questions back to hide
+  questionDiv.setAttribute("style", "display:hide; ");
+  //Change class of the div with id of end-screen out of hide
+  endScreenDiv.setAttribute("style", "display:block; ");
+  //Display score
+  finalScoreEl = score;
+  submitEl.addEventListener('click', function(event) {
+    event.preventDefault();
+    initials = submitEl.input;
+    setScoresAndInitials()
+  })
+}
+
 function timer() {
   var timerInterval = setInterval(function() {
     secondsLeft--;
@@ -103,14 +124,17 @@ function timer() {
   }, 1000);
 }
 
-function startGame() {
-  //test
-  console.log("Has the event listener worked?");//not sure if working
-    //starts timer and everything else in timer function
-    timer();
-    //default userWin = false, not sure if necessary or desirable
-    userWin = false;
-    playGame();
+function userWins() {
+  //updates score, will be retrieved later.
+  score ++;
+  //activates sound - optional extra if time
+  winMusic.play();
+}
+
+function userLoss() {
+  secondsLeft = (secondsLeft - 10);
+  //activates sound - optional extra if time
+  lossMusic.play();
 }
 
 function playGame() {
@@ -161,39 +185,14 @@ function playGame() {
     }
 }}
 
-function userWins() {
-  //updates score, will be retrieved later.
-  score ++;
-  //activates sound - optional extra if time
-  winMusic.play();
-}
-
-function userLoss() {
-  secondsLeft = (secondsLeft - 10);
-  //activates sound - optional extra if time
-  lossMusic.play();
-}
-
-function endGame() {
-  //Change class of the div with id of questions back to hide
-  questionDiv.setAttribute("style", "display:hide; ");
-  //Change class of the div with id of end-screen out of hide
-  endScreenDiv.setAttribute("style", "display:block; ");
-  //Display score
-  finalScoreEl = score;
-  submitEl.addEventListener('click', function(event) {
-    event.preventDefault();
-    initials = submitEl.input;
-
-    setScoresAndInitials()
-  })
-}
-
-function setScoresAndInitials() {
-  //set results in local storage
-  localStorage.setItem("prevScores", prevScores);
-  localStorage.setItem("prevInitials", prevInitials);
-  renderLastRegistered();
+function startGame() {
+  //test
+  console.log("Has the event listener worked?");//not sure if working
+    //starts timer and everything else in timer function
+    timer();
+    //default userWin = false, not sure if necessary or desirable
+    userWin = false;
+    playGame();
 }
 
 //reset local storage
@@ -212,13 +211,8 @@ renderLastRegistered();
 //start game when user clicks on button
 start.addEventListener('click', startGame);//not yet working, don't understand why
 
-/*Make sure to set up any variables in here 
-as you go along and think about the order.
-*/
 
 /*
-  do function clear
-  commit
   do README
   commit
   do README screenshot
