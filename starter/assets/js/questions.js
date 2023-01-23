@@ -23,6 +23,8 @@ var finalScoreEl = document.getElementById("final-score");
 //finalScoreEl now linked to where it should display
 var submitEl = document.getElementById("submit");
 //submitEl now linked to where user clicks submit after submitting initials
+var clearEl = document.getElementById("clear");
+//clearEl now linked to where user clicks to Clear Highscores
 
 var chosenAnswer;
 /*The above is undefined at the start, gets defined in the playGame function.
@@ -74,10 +76,11 @@ var questions = [
 
 ];
 
+var prevScores = localStorage.getItem("prevScores");
+var prevInitials = localStorage.getItem("prevInitials");
+
 function renderLastRegistered() {
   //Retrieves all previous scores and user initials
-  var prevScores = localStorage.getItem("prevScores");
-  var prevInitials = localStorage.getItem("prevInitials");
   // If they are null, return early from this function
   if (prevScores === "" || prevInitials === "") {
     return;
@@ -181,17 +184,27 @@ function endGame() {
   submitEl.addEventListener('click', function(event) {
     event.preventDefault();
     initials = submitEl.input;
+
+    setScoresAndInitials()
+  })
+}
+
+function setScoresAndInitials() {
   //set results in local storage
   localStorage.setItem("prevScores", prevScores);
   localStorage.setItem("prevInitials", prevInitials);
   renderLastRegistered();
-  })
 }
 
+//reset local storage
 function clear() {
-  /*resets local storage
-  */
+  prevScores = 0;
+  prevInitials = "";
+  //updates local storage with blanks
+  setScoresAndInitials();
 }
+
+clearEl.addEventListener('click', clear);
 
 //update from last played
 renderLastRegistered();
@@ -204,12 +217,11 @@ as you go along and think about the order.
 */
 
 /*
-  LEFT TO DO
-  commit
   do function clear
   commit
   do README
   commit
   do README screenshot
   commit
+  debug!
   */
