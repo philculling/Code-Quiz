@@ -34,7 +34,7 @@ var initials;//starts undefined, gets defined in the endGame function.
 var userWin = false;//default so that end is not triggered until user has won
 var score = 0;//tracks score, adds when userWins
 var winMusic = new Audio ("../sfx/correct.wav");//unlikely to work, come back to it
-var lossMusic = new Audio ("../sfx/incorrect.wav");//Sim. CHECK PATH
+var lossMusic = new Audio ("../sfx/incorrect.wav");//Sim. CHECK PATHS but otherwise this is the right way to do it
 var secondsLeft = 75;
 var currentQuestion = 0;
 
@@ -46,31 +46,23 @@ var questions = [
   },
   {
       question: "The condition in an if / else statement is enclosed with _____",
+      choices: ["quotes", "curly brackets", "parentheses", "square brackets"],
       correctAnswer: "parentheses",
-      wrongAnswer1: "quotes",
-      wrongAnswer2: "curly brackets",
-      wrongAnswer3: "square brackets",
   },
   {
       question: "Arrays in JavaScript can be used to store_____",
+      choices: ["other arrays", "booleans", "numbers and strings", "all of the above"],
       correctAnswer: "all of the above",
-      wrongAnswer1: "numbers and strings",
-      wrongAnswer2: "other arrays",
-      wrongAnswer3: "booleans",
   },
 {
       question: "String values must be enclosed within_____ when being assigned to variables.",
+      choices: ["commas", "parentheses", "curly brackets", "quotes"],
       correctAnswer: "quotes",
-      wrongAnswer1: "commas",
-      wrongAnswer2: "parentheses",
-      wrongAnswer3: "curly brackets",
   },
   {
       question: "A very useful tool used during development and debugging for printing content to the debugger is:",
+      choices: ["JavaScript", "console log", "terminal/bash", "for loops"],
       correctAnswer: "console log",
-      wrongAnswer1: "JavaScript",
-      wrongAnswer2: "terminal/bash",
-      wrongAnswer3: "for loops",
   }
 
 ];
@@ -105,7 +97,7 @@ function endGame() {
   endScreenDiv.setAttribute("style", "display:block; ");
   //Display score
   finalScoreEl = score;
-  submitEl.addEventListener('click', function(event) {
+  submitEl.addEventListener('click', function(event) {//check this against the one you know works
     event.preventDefault();
     initials = submitEl.input;
     setScoresAndInitials()
