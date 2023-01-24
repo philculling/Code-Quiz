@@ -92,16 +92,13 @@ function setScoresAndInitials() {
 
 function endGame() {
   //Change class of the div with id of questions back to hide
-  questionDiv.setAttribute("style", "display:hide; ");
+  questionDiv.setAttribute("style", "display:hide; ");//not working
   //Change class of the div with id of end-screen out of hide
   endScreenDiv.setAttribute("style", "display:block; ");
   //Display score
-  finalScoreEl = score;
-  submitEl.addEventListener('click', function(event) {//check this against the one you know works
-    event.preventDefault();
+  finalScoreEl = score;//not displaying, needs checking
+  submitEl.addEventListener('click', setScoresAndInitials)
     initials = submitEl.input;
-    setScoresAndInitials()
-  })
 }
 
 function timer() {
