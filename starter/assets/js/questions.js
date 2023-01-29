@@ -11,10 +11,6 @@ var questionEl = document.getElementById("question-title");
 //questionEl is now the h2 part in the index.html
 var formEl = document.getElementById("choices");
 //formEl is now the choices part in the index.html
-//var userChoice = document.getElementById("option");
-/*userChoice, when selected later in the playGame function, 
-should now link to the option section of the form
-which will be created later*/
 var start = document.getElementById("start");
 //start now linked to the button so can now be used in eventListener
 var timeEl = document.getElementById("time");
@@ -26,15 +22,12 @@ var submitEl = document.getElementById("submit");
 var clearEl = document.getElementById("clear");
 //clearEl now linked to where user clicks to Clear Highscores
 
-var chosenAnswer;
-/*The above is undefined at the start, gets defined in the playGame function.
-*/
 var initials;//starts undefined, gets defined in the endGame function.
 
 var userWin = false;//default so that end is not triggered until user has won
 var score = 0;//tracks score, adds when userWins
-var winMusic = new Audio ("../sfx/correct.wav");//unlikely to work, come back to it
-var lossMusic = new Audio ("../sfx/incorrect.wav");//Sim. CHECK PATHS but otherwise this is the right way to do it
+var winMusic = new Audio ("./assets/sfx/correct.wav");
+var lossMusic = new Audio ("./assets/sfx/incorrect.wav");
 var secondsLeft = 75;
 var currentQuestion = 0;
 
@@ -54,7 +47,7 @@ var questions = [
       choices: ["other arrays", "booleans", "numbers and strings", "all of the above"],
       correctAnswer: "all of the above",
   },
-{
+  {
       question: "String values must be enclosed within_____ when being assigned to variables.",
       choices: ["commas", "parentheses", "curly brackets", "quotes"],
       correctAnswer: "quotes",
@@ -64,7 +57,6 @@ var questions = [
       choices: ["JavaScript", "console log", "terminal/bash", "for loops"],
       correctAnswer: "console log",
   }
-
 ];
 
 var prevScores = localStorage.getItem("prevScores");
@@ -79,7 +71,7 @@ function renderLastRegistered() {
   else {
     var listItem = document.createElement("li");
     listItem.textContent = (prevInitials + " " + prevScores);
-  //  listEl.appendChild(listItem);
+   // listEl.appendChild(listItem);
   }
 }
 
@@ -98,7 +90,7 @@ function endGame() {
   //Display score
   finalScoreEl = score;//not displaying, needs checking
   submitEl.addEventListener('click', setScoresAndInitials)
-    initials = submitEl.input;
+    initials = submitEl.input;//check this
 }
 
 function timer() {
@@ -115,14 +107,12 @@ function timer() {
 function userWins() {
   //updates score, will be retrieved later.
   score ++;
-  //activates sound - optional extra if time
- // winMusic.play();
+  winMusic.play();
 }
 
 function userLoss() {
   secondsLeft = (secondsLeft - 10);
-  //activates sound - optional extra if time
-//  lossMusic.play();
+  lossMusic.play();
 }
 
 function playGame() {
@@ -130,10 +120,8 @@ function playGame() {
     questionDiv.classList.remove('hide');
   
     var form = document.createElement("form");
-    formEl.appendChild(form);
+    formEl.appendChild(form);//makes the form appear
 
-    //for (i = 0; i < questions.length; i++) {
-    //sets questions by looping through array
     questionEl.textContent = questions[currentQuestion].question;
     for (i = 0; i < questions[currentQuestion].choices.length; i++) {
       var choices = document.createElement("button");
@@ -142,45 +130,6 @@ function playGame() {
       choices.addEventListener('click', verifyAnswer);
       form.appendChild(choices);
     }}
-    //create 4 options for inside the form, give them content, append
-/*    var choice1 = document.createElement("button");
-    var label1 = document.createElement("label");
-    var choice2 = document.createElement("button");
-    var label2 = document.createElement("label");
-    var choice3 = document.createElement("button");
-    var label3 = document.createElement("label");
-    var choice4 = document.createElement("button");
-    var label4 = document.createElement("label");*/
-     /*If you can, think about changing the position of the correctAnswer
-    each time; at the moment it's always the first option*/
-    
-    /*label1.textContent = questions[i].correctAnswer;
-    form.appendChild(choice1);
-    choice1.appendChild(label1);
-    //add later for each:
-    //choice1.setAttribute('type', 'radio');
-    label2.textContent = questions[i].wrongAnswer1;
-    form.appendChild(choice2);
-    choice2.appendChild(label2);
-    label3.textContent = questions[i].wrongAnswer2;
-    form.appendChild(choice3);
-    choice3.appendChild(label3);
-    label4.textContent = questions[i].wrongAnswer3;
-    form.appendChild(choice4);
-    choice4.appendChild(label4);
-    /*addEventListener that tracks the user's choice
-    and updates the variable to be used in the if statement.*/
- /*   verifyAnswer {
-      event.preventDefault();
-      chosenAnswer = userChoice.input;//not sure this is the correct way
-    });
-    if (chosenAnswer === questions[i].correctAnswer) {
-      userWins();
-    }
-    else {
-      userLoss();
-    }
-}*/
 
 function verifyAnswer(event) {
   event.preventDefault();
@@ -188,10 +137,16 @@ function verifyAnswer(event) {
   if (this.dataset.choice === questions[currentQuestion].correctAnswer) {
     userWins();
     currentQuestion++;
+    //need to clear both the question (which is happenning)
+    //and options, which I think isn't.
+    //maybe because you've got currentQuestion++; but nothing
+    //to get next options (check reference)++?
     playGame();
   }
   userLoss();
-  if (currentQuestion = questions.length) {
+
+  if (currentQuestion = questions.length) { //tried > instead of =
+    //made rest of questions load ok, but caused other issues
     endGame();
   }
 }
@@ -220,4 +175,37 @@ function clear() {
 renderLastRegistered();
 
 //start game when user clicks on button
-start.addEventListener('click', startGame);
+start.addEventListener('click', startGame); 
+
+/*
+At the moment, on clicking an answer,
+whether right or wrong, the first question IS clearing / changing
+and the clock is running down, so userLoss must be being called,
+and endGame is being called.
+1. What in the code triggers the All done! endGame
+2. Why is the endGame being called when you don't want it to?
+I think it could be line 150.
+3. How do you stop it?
+4. How are you successfully clearing and loading question 2?
+5. Can you apply the same principle to clearing and loading options for 2?
+6. Why is it going straight to end game?
+7. If you can't find an answer to that, can you insert something
+to stop it? e.g. userWin = false, and if userWin
+has to be true before endGame can start?
+This is all in the verifyAnswer function.
+
+8. Nothing is happening when user clicks on submit button.
+
+9. Check you have correctly tracked the input of the user's initials,
+it's about line 93. May have skipped adding textcontent.
+
+10. Check that you have correctly tracked the scores in about line 91.
+See line 99 for timer which IS done correctly.
+
+11. Check file paths for winMusic and lossMusic check file paths;
+Matthew says they should work if their paths are correct.
+
+12. Why does the whole thing not work when I uncomment line 74?
+
+13. Should line 87 be change class instead of setAttr?
+*/
