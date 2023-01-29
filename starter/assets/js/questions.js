@@ -17,14 +17,14 @@ var timeEl = document.getElementById("time");
 //timeEl now linked to the countdown
 var finalScoreEl = document.getElementById("final-score");
 //finalScoreEl now linked to where it should display
+var initialsEl = document.getElementById("initials");
 var submitEl = document.getElementById("submit");
 //submitEl now linked to where user clicks submit after submitting initials
 var clearEl = document.getElementById("clear");
 //clearEl now linked to where user clicks to Clear Highscores
+var startScreen = document.getElementById("start-screen");
+var finalPage = document.getElementById("finalPage");
 
-var initials;//starts undefined, gets defined in the endGame function.
-
-var userWin = false;//default so that end is not triggered until user has won
 var score = 0;//tracks score, adds when userWins
 var winMusic = new Audio ("./assets/sfx/correct.wav");
 var lossMusic = new Audio ("./assets/sfx/incorrect.wav");
@@ -59,38 +59,69 @@ var questions = [
   }
 ];
 
-var prevScores = localStorage.getItem("prevScores");
-var prevInitials = localStorage.getItem("prevInitials");
+finalPage.style.display="none";
 
 function renderLastRegistered() {
-  //Retrieves all previous scores and user initials
-  // If they are null, return early from this function
-  if (prevScores === "" || prevInitials === "") {
-    return;
+  console.log("insidefunction");
+  endScreenDiv.style.display="none";
+  finalPage.style.display="block";
+  let localStorageData= JSON.parse(localStorage.getItem("quizscore"));
+  if (localStorageData != null) {
+    let table = document.createElement("table");
+    let tr1 = document.createElement("tr");
+    let th1 = document.createElement("th");
+    th1.innerHTML="Name";
+    let th2 = document.createElement("th");
+    th2.innerHTML="Score";
+    tr1.append(th1, th2);
+    table.append(tr1);
+
+    for (let i = 0; i < localStorageData.length; i++) {
+      let tr = document.createElement("tr");
+      let td1 = document.createElement("td");
+      td1.innerHTML=localStorageData[i].name;
+
+      let td2 = document.createElement("td");
+      td2.innerHTML=localStorageData[i].score;
+
+      tr.append(td1, td2);
+      table.append(tr);
+
+    }
+
+    finalPage.append(table);
+    
+  }
+ }
+
+function setScoresAndInitials(event) {
+  event.preventDefault();
+  //set results in local storage
+  let localStorageData= JSON.parse(localStorage.getItem("quizscore"));
+  let userdata={
+    name:initialsEl.value,
+    score: score
+  }
+  if (localStorageData === null) {
+    localStorageData = []
+    localStorageData.push(userdata);
   }
   else {
-    var listItem = document.createElement("li");
-    listItem.textContent = (prevInitials + " " + prevScores);
-   // listEl.appendChild(listItem);
+    localStorageData.push(userdata);
   }
-}
 
-function setScoresAndInitials() {
-  //set results in local storage
-  localStorage.setItem("prevScores", prevScores);
-  localStorage.setItem("prevInitials", prevInitials);
+  localStorage.setItem("quizscore", JSON.stringify(localStorageData));
   renderLastRegistered();
 }
 
 function endGame() {
-  //Change class of the div with id of questions back to hide
-  questionDiv.setAttribute("style", "display:hide; ");//not working
-  //Change class of the div with id of end-screen out of hide
-  endScreenDiv.setAttribute("style", "display:block; ");
+  //Change display of the div with id of questions back to none
+  questionDiv.setAttribute("style", "display:none;");//not working
+  //Change class of the div with id of end-screen out of none
+  endScreenDiv.setAttribute("style", "display:block;");
   //Display score
-  finalScoreEl = score;//not displaying, needs checking
+  finalScoreEl.textContent = score;
   submitEl.addEventListener('click', setScoresAndInitials)
-    initials = submitEl.input;//check this
 }
 
 function timer() {
@@ -117,19 +148,25 @@ function userLoss() {
 
 function playGame() {
   //reveal div that contains questions
-    questionDiv.classList.remove('hide');
+    if (currentQuestion < 5) {
+      questionDiv.classList.remove('hide');
   
-    var form = document.createElement("form");
-    formEl.appendChild(form);//makes the form appear
-
-    questionEl.textContent = questions[currentQuestion].question;
-    for (i = 0; i < questions[currentQuestion].choices.length; i++) {
-      var choices = document.createElement("button");
-      choices.textContent = questions[currentQuestion].choices[i];
-      choices.setAttribute("data-choice", questions[currentQuestion].choices[i]);
-      choices.addEventListener('click', verifyAnswer);
-      form.appendChild(choices);
-    }}
+      formEl.innerHTML="";
+      var form = document.createElement("form");
+      formEl.appendChild(form);//makes the form appear
+  
+      questionEl.textContent = questions[currentQuestion].question;
+      for (i = 0; i < questions[currentQuestion].choices.length; i++) {
+        var choices = document.createElement("button");
+        choices.textContent = questions[currentQuestion].choices[i];
+        choices.setAttribute("data-choice", questions[currentQuestion].choices[i]);
+        choices.addEventListener('click', verifyAnswer);
+        form.appendChild(choices);
+      }  
+    } else {
+      endGame();
+    }
+   }
 
 function verifyAnswer(event) {
   event.preventDefault();
@@ -137,16 +174,15 @@ function verifyAnswer(event) {
   if (this.dataset.choice === questions[currentQuestion].correctAnswer) {
     userWins();
     currentQuestion++;
-    //need to clear both the question (which is happenning)
-    //and options, which I think isn't.
-    //maybe because you've got currentQuestion++; but nothing
-    //to get next options (check reference)++?
     playGame();
   }
-  userLoss();
+  else {
+    currentQuestion++;
+    userLoss();
+    playGame();
+  }
 
-  if (currentQuestion = questions.length) { //tried > instead of =
-    //made rest of questions load ok, but caused other issues
+  if (currentQuestion > questions.length) { 
     endGame();
   }
 }
@@ -155,9 +191,8 @@ function startGame() {
   //test
   console.log("Has the event listener worked?");
     //starts timer and everything else in timer function
+    startScreen.classList.add('hide');
     timer();
-    //default userWin = false, not sure if necessary or desirable
-    userWin = false;
     playGame();
 }
 
@@ -169,43 +204,5 @@ function clear() {
   setScoresAndInitials();
 }
 
-//clearEl.addEventListener('click', clear);
-
-//update from last played
-renderLastRegistered();
-
 //start game when user clicks on button
-start.addEventListener('click', startGame); 
-
-/*
-At the moment, on clicking an answer,
-whether right or wrong, the first question IS clearing / changing
-and the clock is running down, so userLoss must be being called,
-and endGame is being called.
-1. What in the code triggers the All done! endGame
-2. Why is the endGame being called when you don't want it to?
-I think it could be line 150.
-3. How do you stop it?
-4. How are you successfully clearing and loading question 2?
-5. Can you apply the same principle to clearing and loading options for 2?
-6. Why is it going straight to end game?
-7. If you can't find an answer to that, can you insert something
-to stop it? e.g. userWin = false, and if userWin
-has to be true before endGame can start?
-This is all in the verifyAnswer function.
-
-8. Nothing is happening when user clicks on submit button.
-
-9. Check you have correctly tracked the input of the user's initials,
-it's about line 93. May have skipped adding textcontent.
-
-10. Check that you have correctly tracked the scores in about line 91.
-See line 99 for timer which IS done correctly.
-
-11. Check file paths for winMusic and lossMusic check file paths;
-Matthew says they should work if their paths are correct.
-
-12. Why does the whole thing not work when I uncomment line 74?
-
-13. Should line 87 be change class instead of setAttr?
-*/
+start.addEventListener('click', startGame);
